@@ -1,0 +1,6 @@
+*.backup
+*.dsn
+*.opw
+*.out
+*.p
+*.accdb
