@@ -4,7 +4,7 @@
 *.out
 *.p
 *.accdb
-*.png
+#*.png
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
