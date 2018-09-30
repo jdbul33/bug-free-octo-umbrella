@@ -4,6 +4,7 @@
 *.out
 *.p
 *.accdb
+*.err
 #*.png
 
 ## Core latex/pdflatex auxiliary files:
