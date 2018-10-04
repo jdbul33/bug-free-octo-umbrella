@@ -1,0 +1,82 @@
+\documentclass[11pt,twocolumn]{article}
+\usepackage{graphicx}
+\usepackage{pdfpages}
+\usepackage{hyperref}
+\usepackage[margin=1.25in]{geometry}
+\graphicspath{ {./Figures/} }
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+\urlstyle{same}
+\usepackage[font={small,it}]{caption}
+\usepackage{fancyvrb}
+\title{Model \& Simulation of South Bend Government Call Center using Arena}
+\author{John D. Bulger, Jacob D. White \& Adali J.J. Johnson, Valparaiso University\thanks{``We have neither given or received, nor have we tolerated other’s use of unauthorized aid."}}
+\date{October 2, 2018}
+\begin{document}
+\maketitle
+
+\section{Introduction}
+The city of South Bend, located in northern Indiana, established a citizen-accessible call center in February 2013.  It addresses almost every aspect of city-citizen interaction, including waste pick-up and removal, water billing and disconnections, and code enforcement.  By serving as a central hub for communication, the call center is able to consolidate a substantial amount of data regarding citizens as consumers.  This data is available on South Bend's open data portal at \textit{https://data-southbend.opendata.arcgis.com}.
+
+\begin{figure}[h]
+	\includegraphics[scale=.17]{south_bend.png}
+	\caption{South Bend, IN (Greg Swiercz)}
+\end{figure}
+
+\par
+The city's call center is seeking to explore XXXXX.  As such, this model and simulation will be constructed with the primary purpose of discovering an answer to this question in order to aid management's decision-making.  The call center will be modeled in Arena, as a discrete-event model, using the open-source data.  Through simulation, this question will be explored and answered.
+
+\section{Background}
+Call centers are a frequently studied topic within the simulation and modeling disciplines.  As such, some basic terminology shall be explained.  This model consists of two primary components:  calls and operators.  Calls will be represented as entities in Arena, as they are created and move through the system.  The operators, also known as 311 liasons, will be represented as resources in Arena.
+\par
+For this exploration, an ``arrival" is defined as a unique call first coming into the call process model.  While such arrivals are frequently defined with an exponential distribution, this model utilizes a more accurate representation of arrivals as calculated from the aforementioned open-source data.  
+%citation here, a pretty basic one
+\par
+While these calls move through the model, they will undergo several assignments, in which they are assigned a priority, language, and topic.  The topic will determine the duration distribution as identified from the open-source data, and the language (English or Spanish) will determine into which operator queue.  Calls will then enter a queue until they can speak to an agent.  After completing or abandoning the calls, the entity is referred to as ``disposed" since it leaves the model at that time.
+
+
+\section{Mathematical Model/Background}
+Our basic model structure is based off the work of Mandelbaun in 2001.  In his heavily-cited paper, he lays out the basic schematic of a call center model.  His model illustrates the possible flow of a call starting with its arrival until its disposal, be that as a lost call or having completed successfully.\cite{mandelbaun}  While simplistic by nature, the model covers all of the basic aspects of a call center in a sensible format that can easily by applied in Arena.  
+
+\begin{figure}[h]
+	\includegraphics[scale=.45]{call_center_layout.png}
+	\caption{Operational Schematic of Call Center (Mandelbaun 2001)}
+\end{figure}
+
+\begin{figure}[h]
+	\includegraphics[scale=.35]{schedule2.jpg}
+	\caption{Call center operator schedule}
+\end{figure}
+
+\section{Simulation Implementation/Background}
+
+
+
+\section{Verification \& Validation}
+
+
+
+\section{Results}
+
+
+
+\section{Challenges}
+
+
+
+\section{Discussion}
+
+
+
+\begin{thebibliography}{7}
+
+\bibitem{mandelbaun}
+Mandelbaun A., A. Sakov and S. Zeltyn. 2001. Empirical Analysis of a Call Center. Technion Israel Institue of Technology, Israel.
+
+\end{thebibliography}
+
+\end{document}
