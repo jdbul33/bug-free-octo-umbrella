@@ -1,10 +1,11 @@
-*.backup
+*.backup.doe
 *.dsn
 *.opw
 *.out
 *.p
 *.accdb
 *.err
+*.spydata
 #*.png
 
 ## Core latex/pdflatex auxiliary files:
