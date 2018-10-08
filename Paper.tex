@@ -43,6 +43,9 @@ For this exploration, an ``arrival" is defined as a unique call first coming int
 
 \section{Prior Work}
 
+Call center and queuing analysis has been the focus of academic research for years.  Brown et al. provide an excellent overview of the Poisson distribution modeling customer arrivals, as well as the accompanying assumptions.  While arrival distribution is not analyzed in this paper, the authors' assumptions are, for the most part, assumed to be true in this analysis.  These center around the general assumption that the customers and operators are statistically identical and that they all act independently.\cite{brown}  Zhang, Hong, and Zhang also describe the arrival process as a Poisson distribution, but discuss models which may be more accurate alternatives.\cite{zhang}  They maintain some of the main assumptions as Brown.  As a result, differences in time-dependent parameters, customer attitudes and preferences, and operator skill levels are treated as negligible.
+\par
+Call centers are a prime opportunity to utilize simulation techniques.  In fact, according to Bapat and Pruitte, simulation is the preferred method to analyze and determine the effectiveness of a call center.\cite{bapat}  It allows for evaluation of metrics beyond what a basic analysis encompasses.  For example, the scheduling of call agents should be optimized against call duration and abandonment, as documented by Saltzman and Mehrota.\cite{saltzman}
 
 \section{Mathematical Model}
 
@@ -89,6 +92,20 @@ While these calls move through the model, they will undergo several assignments,
 
 
 \begin{thebibliography}{7}
+\bibitem{baraka}
+Baraka, H., Baraka H. \& El-Gamily, I. (2013). Assessing call centers' success: A validation of the DeLone and Mclean model for information system. \textit{Egyptian Informatics Journal, 14}, 99-108.
+
+\bibitem{brown}
+Brown, L., Gans, N., Mandelbaum, A., Sakov, A., Shen, H., Zeltyn, S., \& Zhao, L. (2005). Statistical analysis of a telephone call center: a queueing-science perspective. \textit{Journal of the American Statistical Association, 100(469)}, 36-50.
+
+\bibitem{zhang}
+Xiaowei Zhang, L. Jeff Hong, \& Jiheng Zhang. (2014). Scaling and modeling of call center arrivals. \textit{In Proceedings of the 2014 Winter Simulation Conference (WSC '14)}. IEEE Press, Piscataway, NJ, USA, 476-485.
+
+\bibitem{bapat}
+Vivek Bapat \& Eddie B. Pruitte, Jr.. (1998). Using simulation in call centers. \textit{In Proceedings of the 30th conference on Winter simulation (WSC '98)}, D. J. Medeiros, Edward F. Watson, John S. Carson, and Mani S. Manivannan (Eds.). IEEE Computer Society Press, Los Alamitos, CA, USA, 1395-1400.
+
+\bibitem{saltzman}
+Robert Saltzman \& Vijay Mehrotra. (2007). Managing trade-offs in call center agent scheduling: methodology and case study. \textit{In Proceedings of the 2007 Summer Computer Simulation Conference (SCSC '07)}. Society for Computer Simulation International, San Diego, CA, USA, 643-651.
 
 \bibitem{mandelbaun}
 Mandelbaun A., A. Sakov and S. Zeltyn. 2001. Empirical Analysis of a Call Center. Technion Israel Institute of Technology, Israel.
