@@ -21,6 +21,13 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 #%%
+"""
+
+SET YOUR WORKING DIRECTORY TO THE BUG-FREE-OCTO-UMBRELLA FOLDER BEFORE RUNNING THIS CODE!!!
+
+"""
+
+#%%
 
 """
 Importing the data files, stored locally on machine but available through GitHub
