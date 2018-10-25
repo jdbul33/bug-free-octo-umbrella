@@ -16,7 +16,7 @@
 \usepackage{fancyvrb}
 \title{Model \& Simulation of South Bend Government Call Center using Arena}
 \author{John D. Bulger, Jacob D. White \& Adali J.J. Johnson\\Valparaiso University\thanks{``We have neither given or received, nor have we tolerated others' use of unauthorized aid."}}
-\date{October 23, 2018}
+\date{October 25, 2018}
 
 	\begin{document}
 \maketitle
@@ -47,13 +47,14 @@ Call center and queuing analysis has been the focus of academic research for yea
 
 \section{Mathematical Model}
 
-Our core model structure is based off the work of Mandelbaun in 2001.  In his frequently referenced text, he lays out the basic schematic of a call center model.  His model illustrates the possible flow of a call starting with its arrival until disposal, be that as a lost call or having completed successfully.\cite{mandelbaun}  While simplistic by nature, the model covers all of the basic aspects of a call center in a sensible format that can easily by applied in Arena.  
+Our core model structure is based off the work of Mandelbaun in 2001.  In his frequently referenced text, Mandelbaun lays out the basic schematic of a call center model.  His model illustrates the possible flow of a call starting with its arrival until disposal, be that as a lost call or having completed successfully.\cite{mandelbaun}  While simplistic by nature, the model covers all of the basic aspects of a call center in a sensible format that can easily by applied in Arena.  This model can be seen in Figure 2.  
 
 	\begin{figure}[h]
 	\includegraphics[scale=.45]{call_center_layout.png}
 	\caption{Basic Operational Schematic of Call Center (Mandelbaun 2001)}
 	\end{figure}
 
+Mandelbaun's model identifies one avenue for arrivals (incoming calls) and three methods of disposal(lost calls due to busy signal, lost calls due to wait time, and completed calls).  Additionally, completed calls have the option to ''return", where they would immediately re-enter the system for whatever reason (perhaps an unresolved issue).  There is a centralized queue before the calls are distributed among resources (operators).  At its core, this is a condensed high-level view of a call center model, specifically designed so that it could easily by expanded as needed for specific analysis.
 
 \subsection{Expanded Model}
 
