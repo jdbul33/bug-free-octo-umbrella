@@ -75,6 +75,10 @@ Some calls get routed to a supervisor after speaking with an agent.  This superv
 
 Calls are assigned a topic based on the distribution of topics in historical call center data.  In an effort to preserve the simplicity of the model while still utilizing past data, the top six departments (by total number of calls) are specified, with the remaining calls grouped into an ``other" category.  By assigning a topic, the simulation will be able to utilize the historical mean and standard deviation of those topics' call durations in order to more accurately replicate the call center.  The departments specifically included in the model account for 90\% of the total call volume in the original source data, while the ``other" category constitutes the remaining 10\%.  This is illustrated in Figure 3.
 
+	\paragraph{Self-Service}
+	
+One of the purposes of this project is to evaluate the impact of adding a self-service option that would eliminate the need to speak to an agent for certain call topics.  This was added to the base model and was treated as seperate from the base model.  Based on call topic, callers have the option to self-service, with multiple routes leading to the agent queue in the event the caller has trouble or needs an agent.
+
 
 \begin{figure}[h]
 	\includegraphics[scale=.53]{Calls_Department_sim.png}
@@ -93,24 +97,68 @@ All incoming calls are assigned a medium priority by default, and voicemails are
 \section{Verification \& Validation}
 
 	\subsection{Verification Techniques}
-**Discuss the arena results, such as the 2419 calls from the simulation matching with historical data. Discuss the number of breaks being accurate for the break managers. Utilization of operators, spanish vs. english, etc. Total call distribution to operators vs supervisors. Busy signal numbers.
+
+The model and simulation was verified using two primary techniques.  First, the model was tested and run in stages, using simplified or constant parameters.  For example, voicemails were not created and queues were eliminated in order to most simply ensure the call arrival and attribute assignment worked as expected.  A similar process was repeated with voicemails and excluding call arrivals.  Resources (operators and supervisor) were reduced to one at a time and stepped through in order to ensure proper call processing treatment.  
+
+\par
+
+The model was also verified by ensuring the output matched our estimated results from static analysis.  As an example, this includes the comparison of the total number of calls, number of dropped calls, and number of operator breaks for a given simulation period.  An average week of simulation yielded a total of 2,586 calls, with static analysis suggesting an average of 2,505.  The static analysis was computed by taking the sum of arrivals from the arrival schedule (a Poisson distribution) with no regard for randomness. This is close enough to be considered in line with estimates.
+	
 	
 	\subsection{Validation Plan}
 	
+The model and simulation's results were ultimately validated using historical data.  Since we possess several years' worth of call center data, the results of the base simulation can be compared to this historical data.  As an example, the replication mentioned earlier yielded 2,586 weekly incoming calls.  Historical data suggests a total of 2,650 calls per week.  Again, these numbers can be seen as acceptably close for the purposes of this simulation.  Call duration (determined by topic) was also created from the historical data, so this is easily validated as well.  The call center liaison schedule was provided by call center management, again allowing for historical validation as well.  Historical data also exists for percent of calls abandoned, in order to gauge that as well.
 	
 \section{Simulation}
 
-	\subsection{Base Simulation Setup}
-This simulation utilizes an accurate representation of arrivals as calculated from the aforementioned open-source data.  Mean call arrivals were identified down to the hour for each weekday.  The results allows for the arrivals to be scheduled as such in Arena.  This will base the actual volume of calls in line with prior historical trends, as opposed to applying a rough blanket estimate.  The scheduling of operators (resources) is also dictated by historical data.  The operator schedule was supplied by call center management, and can be seen below in Figure 4.  
+	\subsection{Techniques and Language}
+	
+A call center is modeled as a discrete event model, leading to the logical choice of Arena for this simulation.  Arena excels in creating and monitoring entities, while providing a visual representation of their flow through a system (calls through a call center in this case).  Arena allows for efficient statistic and metric collection, which can be analyzed in order to answer the question at hand.
+
+\par
+
+Arena also features built-in modules that vastly simplify actions that would need to intricately programmed in a high-level language.  A prime example of this could be Arena's ``schedule" option.  An Poisson distribution, broken down by hourly duration, is a built-in option that was leveraged for two aspects of this project:  the call arrival schedule and call center operator schedule.  By using this included module, the simulation was able to be developed as close to ``real-life" as possible in these areas.
+	
+	\subsection{Attributes \& Resources}
+
+Three main attributes are assigned to entities upon entry to the system:  topic, language, and priority.  Topic serves as a determinant of the call duration distribution, and is pulled from historical data.  Language is assigned to be either English or Spanish, and the distribution is based on the South Bend, IN Hispanic population percentage.  While other residents surely speak other native languages, the call center only deals internally with English or Spanish, and this simulation is set up to reflect this.  Priority is assigned as a ``medium" for incoming calls, ``low" for voicemails to be returned, and ``high" for calls routed to or from a supervisor.
+
+\par
+
+Two resources exist in this call center model:  call center liaisons (agents) and supervisors.  The agent schedule (and thus total resources at any given simulation time) was based on the historical data as opposed to being an estimated parameter.  This schedule can be seen in Figure 4.  In keeping with typical call center model processes as described by Zhang, these operators are treated as having the same skill level, and thus do not influence the handling of a call \cite{zhang}.  Supervisors handle calls identified as problematic, but are again treated as if they are of the same skill level.  Agent lunch and personal breaks are also based on the schedule provided.
 
 	\begin{figure}[h]
-	\includegraphics[scale=.35]{schedule2.jpg}
-	\caption{Call center operator schedule}
+		\includegraphics[scale=.3]{schedule2.jpg}
+		\caption{Call center operator schedule}
 	\end{figure}
+	
+	\subsection{Parameters}
+	
+	
+	This simulation utilizes an accurate representation of arrivals as calculated from the aforementioned open-source data.  Mean call arrivals were identified down to the hour for each weekday.  The results allows for the arrivals to be scheduled as such in Arena.  This will base the actual volume of calls in line with prior historical trends, as opposed to applying a rough blanket estimate.
+	
+	\par
+	
+	Several other estimated parameters exist in this model and simulation.  These included callers getting a busy signal (and the corresponding retry rate), callers who experience a problem and need to speak with a supervisor, and whether calls who spoke to a supervisor need to be transferred back to an agent to complete a task.  These parameters were estimated through the use of research and experimentation in an effort to represent the center as closely as possible, since no data existed for these.
+	
+	\subsection{Run Settings \& Replications}
+	
+	 The call center is open five days a week, from 7:30 AM to 5:30 PM.  Therefor, the simulation, once built and tested, was run for 26 replications of five ten-hour days.  This works out to a half-year period (not accounting for holidays or other days where it may be closed).  In addition to being a convenient time-period, it aimed to allow for enough replications for the call center arrival distributions to approach the actual call data's distribution.
+	 
+	 
+	\subsection{Adjustments for Self-Serve Option Model}
+	
+	The base model was developed into a second model in order to evaluate the effectiveness of adding a self-service option before speaking to an agent.  The ``route" for calls to self-service utilized empirical research regarding consumer attitudes for automated systems.  A survey by Nuance Enterprise suggests that up to 75\% of consumers see self-service as a preferable option when available \cite{webblog}.  Our simulation settles on 67\% of customers, with self-serviceable topics, will choose to try the self-service option.  
 
 \section{Results}
 
+	\subsection{Number of Operators}
+	
+	
+	\subsection{Self-Service Call Option}
+
 \section{Discussion}
+
 
 
 \section{Conclusion}
@@ -135,7 +183,7 @@ This simulation utilizes an accurate representation of arrivals as calculated fr
 \newpage
 \clearpage
 \pagenumbering{gobble}
-\begin{thebibliography}{7}
+\begin{thebibliography}{8}
 	
 	\bibitem{bapat}
 	Bapat, V. \& Pruitte, E.B. Jr.. (1998). Using simulation in call centers. \textit{In Proceedings of the 30th conference on Winter simulation (WSC '98)}, D. J. Medeiros, Edward F. Watson, John S. Carson, and Mani S. Manivannan (Eds.). IEEE Computer Society Press, Los Alamitos, CA, USA, 1395-1400.
@@ -144,7 +192,7 @@ This simulation utilizes an accurate representation of arrivals as calculated fr
 	Saltzman, R.M. \& Mehrotra, V.. (2007). Managing trade-offs in call center agent scheduling: methodology and case study. \textit{In Proceedings of the 2007 Summer Computer Simulation Conference (SCSC '07)}. Society for Computer Simulation International, San Diego, CA, USA, 643-651.
 	
 	\bibitem{saltzmeh}
-	Saltzman, R.M. \& Mehrota, V. (2001). A call center uses simulation to drive strategic change. \textit{Interfaces 31}(3). \href{https://doi.org/10.1287/inte.31.3.87.9632}{https://doi.org/10.1287/inte.31.3.87.9632}. 
+	Saltzman, R.M. \& Mehrota, V. (2001). A call center uses simulation to drive strategic change. \textit{Interfaces 31}(3). https://doi.org/10.1287/inte.31.3.87.9632.
 	
 	
 	\bibitem{baraka}
@@ -158,6 +206,9 @@ This simulation utilizes an accurate representation of arrivals as calculated fr
 
 	\bibitem{mandelbaun}
 	Mandelbaun A., Sakov A., \& Zeltyn S.. (2001). Empirical Analysis of a Call Center. Technion Israel Institute of Technology, Israel.
+	
+	\bibitem{webblog}
+	Finlay, A. (2018, August 10) \textit{It’s Not You, It’s Bots: Why Some Customers Prefer Self-Service Support Over Human Support Agents}. Retrieved from https://thinkrelay.com/blog/self-service-support/.
 
 \end{thebibliography}
 
