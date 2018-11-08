@@ -54,7 +54,7 @@ Our core model structure is based off the work of Mandelbaun in 2001\cite{mandel
 	\caption{Basic Operational Schematic of Call Center (Mandelbaun 2001)}
 	\end{figure}
 
-Mandelbaun's model identifies one avenue for arrivals (incoming calls) and three methods of disposal(lost calls due to busy signal, lost calls due to wait time, and completed calls).  It can be seen that the lost calls due to busy signals and the lost calls due to wait time both have retrial loops built in where some customers may immediately try to call into the system again and are treated as new arrivals for the sake of the simulation.  Additionally, completed calls have the option to ``return", where they would immediately re-enter the system for whatever reason (perhaps an unresolved issue).  There is a single centralized queue before the calls are distributed among resources (operators).  At its core, this is a condensed high-level view of a call center model, specifically designed so that it could easily by expanded as needed for specific analysis.
+Mandelbaun's model identifies one avenue for arrivals (incoming calls) and three methods of disposal(lost calls due to busy signal, lost calls due to wait time, and completed calls).  It can be seen that the lost calls due to busy signals and the lost calls due to wait time both have retrial loops built in where some customers may immediately try to call into the system again and are treated as new arrivals for the sake of the simulation.  Additionally, completed calls have the option to ``return", where they would immediately re-enter the system for whatever reason (perhaps an unresolved issue).  There is a single centralized queue before the calls are distributed among resources (operators).  At its core, this is a condensed high-level view of a call center model, specifically designed so that it could easily be expanded as needed for specific analysis.
 
 \subsection{Expanded Model}
 The model used for this analysis expands a great deal on the core model identified by Mandelbaun.  It adds three key features that the original model omits: voicemails, operator breaks, and alternate call flow for supervisor assistance.  Additionally, calls are assigned key attributes that determine their specific flow and timing throughout the simulation.  These key attributes include topic, language, and priority.
@@ -77,7 +77,7 @@ Calls are assigned a topic based on the distribution of topics in historical cal
 
 	\paragraph{Self-Service}
 	
-One of the purposes of this project is to evaluate the impact of adding a self-service option that would eliminate the need to speak to an agent for certain call topics.  This was added to the base model and was treated as seperate from the base model.  Based on call topic, callers have the option to self-service, with multiple routes leading to the agent queue in the event the caller has trouble or needs an agent.
+One of the purposes of this project is to evaluate the impact of adding a self-service option that would eliminate the need to speak to an agent for certain call topics.  This was added as an extension of the base model, but was run separately from the base model for the use of direct comparison of the results.  Depending on the assigned call topic, callers have the option to self-service, with multiple routes leading to the agent queue in the event the caller has trouble with self-service and needs an operator.
 
 
 \begin{figure}[h]
@@ -87,11 +87,11 @@ One of the purposes of this project is to evaluate the impact of adding a self-s
 
 	\paragraph{Language}
 
-Each call and voicemail is assigned a language of either Spanish or English.  The actual call center deals in both of those language, and it has Spanish-speaking operators available.  In order to reflect this, the model's resources all speak English, with some able to speak Spanish as well.  Therefore, arrivals will be routed into two queues:  one for English, and one for Spanish.  Historical data regarding this distribution was not immediately available, so this is modeled as an estimated parameter.
+Each call and voicemail is assigned a language of either Spanish or English.  The actual call center deals in both of those language, and it has Spanish-speaking operators available.  In order to reflect this, the model's resources all speak English, with some able to speak Spanish as well.  Therefore, arrivals will be routed into two queues:  one for English, and one for Spanish.  Historical data regarding this distribution was not immediately available, so this is modeled as an estimated parameter that was generated from the population demographics of South Bend.
 
 	\paragraph{Priority}
 
-All incoming calls are assigned a medium priority by default, and voicemails are given the lowest priority (as they can be answered and returned as time permits).  After speaking to an agent, calls needing escalation to a supervisor are given the highest priority (in the event they need to cycle back through the queue again).
+All incoming calls are assigned a medium priority by default and all voicemails are given a low priority by default (as they can be answered and returned as time permits).  After speaking to an agent, calls needing escalation to a supervisor are given the highest priority (in the event they need to cycle back through the queue again).
 
 
 \section{Verification \& Validation}
@@ -102,30 +102,30 @@ The model and simulation was verified using two primary techniques.  First, the 
 
 \par
 
-The model was also verified by ensuring the output matched our estimated results from static analysis.  As an example, this includes the comparison of the total number of calls, number of dropped calls, and number of operator breaks for a given simulation period.  An average week of simulation yielded a total of 2,586 calls, with static analysis suggesting an average of 2,505.  The static analysis was computed by taking the sum of arrivals from the arrival schedule (a Poisson distribution) with no regard for randomness. This is close enough to be considered in line with estimates.
+The model was also verified by ensuring the output matched the estimated results produced from a static analysis.  As an example, this includes the comparison of the total number of calls, number of dropped calls, and number of operator breaks for a given simulation period.  An average week of simulation yielded a total of 2,586 calls, with static analysis suggesting an average of 2,505.  The simulation also yielded the correct number of breaks given the number of full-time and part-time employees that worked on a given replication.  The static analysis was computed by taking the sum of arrivals from the arrival schedule (a Poisson distribution) with no regard for randomness.  These values affirm the results being generated from the simulation.
 	
 	
 	\subsection{Validation Plan}
 	
-The model and simulation's results were ultimately validated using historical data.  Since we possess several years' worth of call center data, the results of the base simulation can be compared to this historical data.  As an example, the replication mentioned earlier yielded 2,586 weekly incoming calls.  Historical data suggests a total of 2,650 calls per week.  Again, these numbers can be seen as acceptably close for the purposes of this simulation.  Call duration (determined by topic) was also created from the historical data, so this is easily validated as well.  The call center liaison schedule was provided by call center management, again allowing for historical validation as well.  Historical data also exists for percent of calls abandoned, in order to gauge that as well.
+The model and simulation's results were ultimately validated using historical data.  Since we possess several years' worth of call center data, the results of the base simulation can be compared to this historical data.  As an example, the replication mentioned earlier yielded 2,586 weekly incoming calls.  Historical data suggests a total of 2,650 calls per week.  Again, these numbers can be seen as affirmation for the purposes of this simulation.  Call duration (determined by topic) was also created from the historical data, so this is easily validated as well.  The operator schedule was provided by call center management, ensuring historical validation for these values.  Historical data also exists for percent of calls abandoned, which can also be directly compared.
 	
 \section{Simulation}
 
 	\subsection{Techniques and Language}
 	
-A call center is modeled as a discrete event model, leading to the logical choice of Arena for this simulation.  Arena excels in creating and monitoring entities, while providing a visual representation of their flow through a system (calls through a call center in this case).  Arena allows for efficient statistic and metric collection, which can be analyzed in order to answer the question at hand.
+A call center is modeled as a discrete event model, leading to the logical choice of Arena for this simulation.  Arena excels in creating and monitoring entities, while providing a visual representation of their flow through a system (calls through a call center in this case).  Arena allows for efficient statistic and metric collection, which can be organized and analyzed to answer any questions initially posed for the simulation.
 
 \par
 
-Arena also features built-in modules that vastly simplify actions that would need to intricately programmed in a high-level language.  A prime example of this could be Arena's ``schedule" option.  An Poisson distribution, broken down by hourly duration, is a built-in option that was leveraged for two aspects of this project:  the call arrival schedule and call center operator schedule.  By using this included module, the simulation was able to be developed as close to ``real-life" as possible in these areas.
+Arena also features built-in modules that vastly simplify actions that would need to intricately programmed in a high-level language.  A prime example of this could be Arena's ``schedule" option.  A Poisson distribution, broken down by hourly duration, is a built-in option that was leveraged for two aspects of this project:  the call arrival schedule and call center operator schedule.  By using this included module, the simulation was able to be developed as close to ``real-life" as possible in these areas.
 	
 	\subsection{Attributes \& Resources}
 
-Three main attributes are assigned to entities upon entry to the system:  topic, language, and priority.  Topic serves as a determinant of the call duration distribution, and is pulled from historical data.  Language is assigned to be either English or Spanish, and the distribution is based on the South Bend, IN Hispanic population percentage.  While other residents surely speak other native languages, the call center only deals internally with English or Spanish, and this simulation is set up to reflect this.  Priority is assigned as a ``medium" for incoming calls, ``low" for voicemails to be returned, and ``high" for calls routed to or from a supervisor.
+Three main attributes are assigned to entities upon entry to the system:  topic, language, and priority.  Topic serves as a determinant of the call duration distribution, and is pulled from historical data.  Language is assigned to be either English or Spanish, and the distribution is based on the South Bend Hispanic population percentage.  While other residents surely speak other native languages, the call center only deals internally with English or Spanish, and this simulation is set up to reflect this.  Priority is assigned as a ``medium" for incoming calls, ``low" for voicemails to be returned, and ``high" for calls routed to or from a supervisor.
 
 \par
 
-Two resources exist in this call center model:  call center liaisons (agents) and supervisors.  The agent schedule (and thus total resources at any given simulation time) was based on the historical data as opposed to being an estimated parameter.  This schedule can be seen in Figure 4.  In keeping with typical call center model processes as described by Zhang, these operators are treated as having the same skill level, and thus do not influence the handling of a call \cite{zhang}.  Supervisors handle calls identified as problematic, but are again treated as if they are of the same skill level.  Agent lunch and personal breaks are also based on the schedule provided.
+Two resources exist in this call center model:  call center liaisons (operators) and supervisors.  The operator schedule (and thus total resources at any given simulation time) was based on the historical data as opposed to being an estimated parameter.  This schedule can be seen in Figure 4.  In keeping with typical call center model processes as described by Zhang, these operators are treated as having the same skill level, and thus do not influence the handling of a call \cite{zhang}.  Supervisors handle calls identified as problematic, but are again treated as if they are of the same skill level.  Operator lunches and personal breaks are also based on the schedule provided.
 
 	\begin{figure}[h]
 		\includegraphics[scale=.3]{schedule2.jpg}
@@ -135,7 +135,7 @@ Two resources exist in this call center model:  call center liaisons (agents) an
 	\subsection{Parameters}
 	
 	
-	This simulation utilizes an accurate representation of arrivals as calculated from the aforementioned open-source data.  Mean call arrivals were identified down to the hour for each weekday.  The results allows for the arrivals to be scheduled as such in Arena.  This will base the actual volume of calls in line with prior historical trends, as opposed to applying a rough blanket estimate.
+	This simulation utilizes an accurate representation of arrivals as calculated from the aforementioned open-source data.  Mean call arrivals were identified down to the hour for each weekday.  This allows for the simulation to not only pick up on historical call patterns by hour, but also the differences between each day.  The results allow for the arrivals to be scheduled as such in Arena.  This will base the actual volume of calls in line with prior historical trends, as opposed to applying a rough blanket estimate.
 	
 	\par
 	
@@ -143,12 +143,12 @@ Two resources exist in this call center model:  call center liaisons (agents) an
 	
 	\subsection{Run Settings \& Replications}
 	
-	 The call center is open five days a week, from 7:30 AM to 5:30 PM.  Therefor, the simulation, once built and tested, was run for 26 replications of five ten-hour days.  This works out to a half-year period (not accounting for holidays or other days where it may be closed).  In addition to being a convenient time-period, it aimed to allow for enough replications for the call center arrival distributions to approach the actual call data's distribution.
+	 The call center is open five days a week, from 7:30 AM to 5:30 PM.  Therefore, the simulation was run for 26 replications of five ten-hour days.  This works out to a half-year period (not accounting for holidays or other days where the call center may be closed).  This span of time was decided upon to try and allow for enough replications for the call center arrival distributions to approach the actual call data's distribution.
 	 
 	 
 	\subsection{Adjustments for Self-Serve Option Model}
 	
-	The base model was developed into a second model in order to evaluate the effectiveness of adding a self-service option before speaking to an agent.  The ``route" for calls to self-service utilized empirical research regarding consumer attitudes for automated systems.  A survey by Nuance Enterprise suggests that up to 75\% of consumers see self-service as a preferable option when available \cite{webblog}.  Our simulation settles on 67\% of customers, with self-serviceable topics, will choose to try the self-service option.  
+	The base model was expanded upon into a second model in order to evaluate the effectiveness of adding a self-service alternative before speaking to an agent.  The ``route" for calls to self-service utilized empirical research regarding consumer attitudes for automated systems.  A survey by Nuance Enterprise suggests that up to 75\% of consumers see self-service as a convenient option when available while 67\% said they preferred self-service over dealing with a company representative \cite{webblog}.  The simulation utilizes the 67\% preference to determine the number of call arrivals that will be routed into self-service options, given the customer has been assigned a topic that is self-serviceable.  All remaining calls were routed to the operator queue discussed in the original model.
 
 \section{Results}
 
