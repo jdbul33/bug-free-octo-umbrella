@@ -47,6 +47,7 @@ Call center and queuing analysis has been the focus of academic research for yea
 
 \section{Mathematical Model}
 
+	\subsection{Base Model}
 Our core model structure is based off the work of Mandelbaun in 2001\cite{mandelbaun}.  In his highly esteemed text, Mandelbaun lays out the basic schematic of a call center model.  His model illustrates the possible flow of a call, starting with its arrival until disposal, be that as a lost call or having completed successfully.  While simplistic by nature, the model covers all of the basic aspects of a call center in a sensible format that can easily by applied in Arena.  This model can be seen in Figure 2.  
 
 	\begin{figure}[h]
@@ -56,7 +57,7 @@ Our core model structure is based off the work of Mandelbaun in 2001\cite{mandel
 
 Mandelbaun's model identifies one avenue for arrivals (incoming calls) and three methods of disposal(lost calls due to busy signal, lost calls due to wait time, and completed calls).  It can be seen that the lost calls due to busy signals and the lost calls due to wait time both have retrial loops built in where some customers may immediately try to call into the system again and are treated as new arrivals for the sake of the simulation.  Additionally, completed calls have the option to ``return", where they would immediately re-enter the system for whatever reason (perhaps an unresolved issue).  There is a single centralized queue before the calls are distributed among resources (operators).  At its core, this is a condensed high-level view of a call center model, specifically designed so that it could easily be expanded as needed for specific analysis.
 
-\subsection{Expanded Model}
+\subsection{Analysis-Specific Expanded Model}
 The model used for this analysis expands a great deal on the core model identified by Mandelbaun.  It adds three key features that the original model omits: voicemails, operator breaks, and alternate call flow for supervisor assistance.  Additionally, calls are assigned key attributes that determine their specific flow and timing throughout the simulation.  These key attributes include topic, language, and priority.
 
 	\paragraph{Voicemails}
@@ -102,22 +103,22 @@ The model and simulation was verified using two primary techniques.  First, the 
 
 \par
 
-The model was also verified by ensuring the output matched the estimated results produced from a static analysis.  As an example, this includes the comparison of the total number of calls, number of dropped calls, and number of operator breaks for a given simulation period.  An average week of simulation yielded a total of 2,586 calls, with static analysis suggesting an average of 2,505.  The simulation also yielded the correct number of breaks given the number of full-time and part-time employees that worked on a given replication.  The static analysis was computed by taking the sum of arrivals from the arrival schedule (a Poisson distribution) with no regard for randomness.  These values affirm the results being generated from the simulation.
+The model was also verified by ensuring the output matched the estimated results produced from a static analysis.  As an example, this includes the comparison of the total number of calls, number of dropped calls, and number of operator breaks for a given simulation period.  With randomness removed from the simulation, it is possible to ensure the numbers produced from these processes are close to what is expected.
 	
 	
 	\subsection{Validation Plan}
 	
-The model and simulation's results were ultimately validated using historical data.  Since we possess several years' worth of call center data, the results of the base simulation can be compared to this historical data.  As an example, the replication mentioned earlier yielded 2,586 weekly incoming calls.  Historical data suggests a total of 2,650 calls per week.  Again, these numbers can be seen as affirmation for the purposes of this simulation.  Call duration (determined by topic) was also created from the historical data, so this is easily validated as well.  The operator schedule was provided by call center management, ensuring historical validation for these values.  Historical data also exists for percent of calls abandoned, which can also be directly compared.
+The model and simulation's results can ultimately be validated using historical data.  Since we possess several years' worth of call center data, the results of the base simulation can be compared to this .  The number of call arrivals was created from the historical data, so this can be compared.  The operator schedule was provided by call center management, allowing for actual validation for these values.  Historical data also exists for percent of calls abandoned, which can also be directly compared.
 	
 \section{Simulation}
 
-	\subsection{Techniques and Language}
+	\subsection{Method}
 	
 A call center is modeled as a discrete event model, leading to the logical choice of Arena for this simulation.  Arena excels in creating and monitoring entities, while providing a visual representation of their flow through a system (calls through a call center in this case).  Arena allows for efficient statistic and metric collection, which can be organized and analyzed to answer any questions initially posed for the simulation.
 
 \par
 
-Arena also features built-in modules that vastly simplify actions that would need to intricately programmed in a high-level language.  A prime example of this could be Arena's ``schedule" option.  A Poisson distribution, broken down by hourly duration, is a built-in option that was leveraged for two aspects of this project:  the call arrival schedule and call center operator schedule.  By using this included module, the simulation was able to be developed as close to ``real-life" as possible in these areas.
+Arena also features built-in modules that vastly simplify actions that would need to intricately programmed in a high-level language.  A prime example of this could be Arena's schedule option, which is a built-in option that was leveraged for two aspects of this project:  the call arrival schedule and call center operator schedule.  By using this included module, the simulation was able to be developed as close to ``real-life" as possible in these areas.
 	
 	\subsection{Attributes \& Resources}
 
@@ -135,7 +136,7 @@ Two resources exist in this call center model:  call center liaisons (operators)
 	\subsection{Parameters}
 	
 	
-	This simulation utilizes an accurate representation of arrivals as calculated from the aforementioned open-source data.  Mean call arrivals were identified down to the hour for each weekday.  This allows for the simulation to not only pick up on historical call patterns by hour, but also the differences between each day.  The results allow for the arrivals to be scheduled as such in Arena.  This will base the actual volume of calls in line with prior historical trends, as opposed to applying a rough blanket estimate.
+	This simulation utilizes an accurate representation of arrivals as calculated from the aforementioned open-source data.  Mean call arrivals were identified down to the hour for each weekday.  This allows for the simulation to not only pick up on historical call patterns by hour, but also the differences between each day.  A Poisson distribution, broken down by this hourly data, was used to model the arrivals, allowing for the arrivals to be scheduled as such in Arena.  This will base the actual volume of calls in line with prior historical trends, as opposed to applying a rough blanket estimate.
 	
 	\par
 	
@@ -152,10 +153,26 @@ Two resources exist in this call center model:  call center liaisons (operators)
 
 \section{Results}
 
+	\subsection{Verification \& Validation}
+	
+	% This all needs dressed up and more added
+	
+	  An average week of simulation yielded a total of 2,586 calls, with static analysis suggesting an average of 2,505.  The simulation also yielded the correct number of breaks given the number of full-time and part-time employees that worked on a given replication.  The static analysis was computed by taking the sum of arrivals from the arrival schedule (a Poisson distribution) with no regard for randomness.  These values affirm the results being generated from the simulation.  For validation purposes, historical data suggests a total of 2,650 calls per week.  Again, these numbers can be seen as affirmation for the purposes of this simulation.
+	  
+	  \par
+	  
+	  Similarly, the number of breaks taken for the simulation match both the static analysis (serving as verification) and the actual operator schedule (serving as validation).  Other key parameters, such as call duration and the number of voicemails created, match what was expected.  Given this information, along with more intricate verification of the model during construction, provides confidence that the simulations performed are valid.
+	  
+	  
 	\subsection{Number of Operators}
 	
 	
+	
+	
 	\subsection{Self-Service Call Option}
+
+
+
 
 \section{Discussion}
 
@@ -163,7 +180,11 @@ Two resources exist in this call center model:  call center liaisons (operators)
 
 \section{Conclusion}
 
+
+
 	\subsection{Challenges}
+
+
 
 	\subsection{Opportunities for Further Study}
 
@@ -209,6 +230,7 @@ Two resources exist in this call center model:  call center liaisons (operators)
 	
 	\bibitem{webblog}
 	Finlay, A. (2018, August 10) \textit{It’s Not You, It’s Bots: Why Some Customers Prefer Self-Service Support Over Human Support Agents}. Retrieved from https://thinkrelay.com/blog/self-service-support/.
+	
 
 \end{thebibliography}
 
