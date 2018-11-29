@@ -1,0 +1,5 @@
+﻿Operator_Diff,Avg_Wait,Number of Hang_Ups,Agent_Util
+1_Less,0.034,16.5,0.509
+Base,0.064,7.7,0.447
+1_More,0.064,2.2,0.402
+2_More,0.063,1.4,0.369

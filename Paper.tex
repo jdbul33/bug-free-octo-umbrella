@@ -30,7 +30,7 @@ The city of South Bend, located in northern Indiana, established a citizen-acces
 	\end{figure}
 
 \par
-The city's call center is seeking to explore operational efficiency with regard to operator staff.  As such, this model and simulation will be constructed with the primary purpose of discovering the optimal number of agents while maintaining adequate customer satisfaction (measured by time in queue).  Additionally, the model will be modified to explore the addition of a self-service touch-tone option that would allow for callers to complete simple tasks, such as scheduling an extra trash pickup, without speaking to an agent.  Through simulation, these questions will be explored and potential solutions will be posited.  The open-source data was processed in Python in order to extract relevant distributions, and the call center was modeled in Arena as a discrete-event model.  
+The city's call center is seeking to explore operational efficiency with regard to operator staff.  As such, this model and simulation will be constructed with the primary purpose of discovering the optimal number of agents while maintaining adequate customer satisfaction (measured by waiting time and other metrics).  Additionally, the model will be modified to explore the addition of a self-service touch-tone option that would allow for callers to complete simple tasks, such as scheduling an extra trash pickup, without speaking to an agent.  Through simulation, these questions will be explored and potential solutions will be posited.  The open-source data was processed in Python in order to extract relevant distributions, and the call center was modeled in Arena as a discrete-event model.  
 
 \section{Background}
 Call centers are a frequently studied topic within the simulation and modeling disciplines.  As such, some basic terminology shall be explained.  This model consists of two primary components:  calls and operators.  Calls will be represented as entities in Arena.  As entities, they can be created on distributions found from the data processing and then can properly flow through the simulation to a disposal point.  For this exploration, an ``arrival" is defined as a unique call first coming into the call process model.  The operators, also known as ``311 liasons," will be represented as resources in Arena.  As resources, the operators can be seized by the incoming call entities to properly simulate their time spent on each call.
@@ -57,7 +57,7 @@ Our core model structure is based off the work of Mandelbaun in 2001\cite{mandel
 
 Mandelbaun's model identifies one avenue for arrivals (incoming calls) and three methods of disposal(lost calls due to busy signal, lost calls due to wait time, and completed calls).  It can be seen that the lost calls due to busy signals and the lost calls due to wait time both have retrial loops built in where some customers may immediately try to call into the system again and are treated as new arrivals for the sake of the simulation.  Additionally, completed calls have the option to ``return", where they would immediately re-enter the system for whatever reason (perhaps an unresolved issue).  There is a single centralized queue before the calls are distributed among resources (operators).  At its core, this is a condensed high-level view of a call center model, specifically designed so that it could easily be expanded as needed for specific analysis.
 
-\subsection{Analysis-Specific Expanded Model}
+\subsection{Analysis-Specific Model}
 The model used for this analysis expands a great deal on the core model identified by Mandelbaun.  It adds three key features that the original model omits: voicemails, operator breaks, and alternate call flow for supervisor assistance.  Additionally, calls are assigned key attributes that determine their specific flow and timing throughout the simulation.  These key attributes include topic, language, and priority.
 
 	\paragraph{Voicemails}
@@ -144,14 +144,14 @@ Two resources exist in this call center model:  call center liaisons (operators)
 	
 	\subsection{Run Settings \& Replications}
 	
-	 The call center is open five days a week, from 7:30 AM to 5:30 PM.  Therefore, the simulation was run for 26 replications of five ten-hour days.  This works out to a half-year period (not accounting for holidays or other days where the call center may be closed).  This span of time was decided upon to try and allow for enough replications for the call center arrival distributions to approach the actual call data's distribution.
+	 The call center is open five days a week, from 7:30 AM to 5:30 PM.  Therefore, the simulation was run for 100 replications of five ten-hour days.  Each replication serves to represent an ``average" week for the call center.  In this case, 100 replications should be enough in order to obtain a reliable simuation of the call center.
 	 
 	 
 	\subsection{Adjustments for Self-Serve Option Model}
 	
 	The base model was expanded upon into a second model in order to evaluate the effectiveness of adding a self-service alternative before speaking to an agent.  The ``route" for calls to self-service utilized empirical research regarding consumer attitudes for automated systems.  A survey by Nuance Enterprise suggests that up to 75\% of consumers see self-service as a convenient option when available while 67\% said they preferred self-service over dealing with a company representative \cite{webblog}.  The simulation utilizes the 67\% preference to determine the number of call arrivals that will be routed into self-service options, given the customer has been assigned a topic that is self-serviceable.  All remaining calls were routed to the operator queue discussed in the original model.
 
-\section{Results}
+\section{Experimentation \& Results}
 
 	\subsection{Verification \& Validation}
 	
@@ -166,30 +166,80 @@ Two resources exist in this call center model:  call center liaisons (operators)
 	  
 	\subsection{Number of Operators}
 	
+	An evaluation of the number of operators on schedule was the first question addressed through simulation.  For this experimentation, three primary metrics were evaluated:  number of calls abandoned (hang-ups), average operator utilization, and average waiting time.  The number of calls abandoned metric, it should be noted, is based on a completely estimated parameter which has calls that have spent over 15 minutes in the queue ``hang up."  This is set as a repeating manager in Arena that checks the queue every 5 minutes.  While this is not how hang ups are determined in real-life, it does provide call abandonment numbers that are in line with historical data.  Additionally, since it is consistent among these trials, it still serves as a useful measure of the impact of schedule changes.
 	
+	\par
+	
+	The base number of operators, taken from the provided schedule in Figure 4, serves as the control for this exploration.  From this starting point, additional full-time operators were added and subtracted to gauge the effect.  The effects of adding a specific part-time schedule or such was not evaluated, since it would require input from the city for a specific request.  However, these simulations are set up as such that a specific inquiry could be easily explored.
+	
+	\par
+	
+	The simulation was run with the base operator schedule, -1, +1, and +2.  Calls abandoned and operator utilization can be seen in Figure 5.  Both of these metrics reacted as expected, with less hang-ups and lower operator utilization as the number of operators increased.  Wait time was an interesting metric, in that it did not vary significantly at all with the change in operators, varying by 0.02 hours.  This can most likely be attributed to the customer patience parameter; as callers hang up, the queue advances.  It seems that over replications, this effect evens out regardless of the number of operators (within reason).
+	
+	\begin{figure}[h]
+		\includegraphics[scale=.5]{num_ops_plot.png}
+		\caption{}
+	\end{figure}
 	
 	
 	\subsection{Self-Service Call Option}
 
+	The addition of a self-serve option was compared to the base model, with the actual number of operators.  In this experimentation, only the percentage of eligible callers who choose the self-service option was adjusted; all other parameters were held constant.  This was done so in order to gauge the amount of consumers who adopt the self-serve option that would show a benefit to the call center.
+	
+	\par
+	
+	This experiment was run by utilizing Arena's Process Analyzer tool on the self-serve model.  The percent of customers (who have an eligible topic) was established as the control.  It was observed from 35\% to 85\%, in 5\% increments, as well as the literature-supported 67\% level.  Customer average wait time, number in the main operator queue, and operator utilization were set as the response variables.  Since this analysis is purely hypothetical, any sort of maximum self-service support threshold was not accounted for.
+	
+	\par
+	
+	Overall, this experimentation worked as expected.  As the number of callers who chose the self-service option increased, the wait time, queue length, and agent utilization all experienced linear decreases.  A visualization of the queue statistics can be seen in Figure 6.  Furthermore, the decrease in operator utilization can be seen in Figure 7.  It should be noted that in these trials, the graphs do show a definitive decrease in all metrics.
+
+\begin{figure}[h]
+	\includegraphics[scale=.5]{self_serve_results.png}
+	\caption{}
+\end{figure}
+
+
+\begin{figure}[h]
+	\includegraphics[scale=.5]{op_self_serve.png}
+	\caption{}
+\end{figure}
 
 
 
 \section{Discussion}
 
+The results of both experiments provided clear metrics on which to base a decision.  First, it appears that the call center could add or remove a full-time operator without a substantial cost or customer service impact.  Removing an agent would change hang-ups per day from 8 to 16 (still a small percentage of the 400-500 daily calls received), and it would lead to a 6\% increase in agent utilization.  This may well be a smart decision.  Adding one or two more operators reduces calls abandoned, but at a diminishing rate when compared to the loss of utilization.
+
+\par
+
+Secondly, the self-serve simulation experiment shows that operator utilization decreases in a linear fashion depending on the number of callers who can and do choose the self-service option, all else held equal.  Similarly, wait time and queue length decrease as well.  As expected, a self-serve option that even a small percentage of customers use could clearly make the case for removing one operator (as supported above, even without a self-serve option).  However, the true effectiveness of adding such a system would take into other factors, such as start-up and maintenance costs and customer education and marketing.
+
+\par
+
+Both of these experiments include estimated parameters, particularly the hypothetical self-service model.  As a result, neither of these experiments definitively answer/attempt to answer any of these question until they are compared to internal data for accuracy.  Such data would replace estimates with more accurate numbers and distributions; then, a simulation could be run for a definitive question.
 
 
 \section{Conclusion}
 
+Overall, this analysis resulted in the building of an accurate, historically validated model that was modified and used to provide results to two main questions.  While call centers are a frequently modeled system, this project was unique since it is based on an actual, operating center.  The inclusion of as much historical data as possible leads this analysis from the realm of theoretical into a practical and useful application.  The primary goal of this project was to create a model as similar as possible to the actual call center; this was achieved.  The questions explored, while simplistic in nature, would surely be of interest to city officials when it comes to budgets and annual planning.
 
 
 	\subsection{Challenges}
 
-
+	This model development and simulation presented two main challenges that had to be overcome in order to produce a successful project.  First, while many parameters for the model were either contained in or could be deduced from the historical data, several were not.  These included customer patience levels, number of supervisors (and the number of calls they handled), and the number of voicemails necessitating a return call.  Determining appropriate levels for these parameters involved some trial and error, and perhaps may not still be completely accurate.  However, the confidence held in the call arrival rate, duration distributions, and operator schedule is exceptionally strong due to this historical data analysis.  Since these components are arguably the most important aspects of the call center, the model is not particularly sensitive to the estimated parameters.
+	
+	\par
+	
+	A second main challenge was determining when the model's complexity was sufficient in order to explore the posed questions and avoiding an overly-complicated or unbalanced model.  With an actual call center as the subject, this model could have easily become so complicated as to be inefficient and more error-prone (harder to test and debug).  A prime example of this is the assignment of call topics to determine the call duration distribution.  Twenty-six departments, each with their own duration statistics, exist in the historical data.  However, the final model incorporates only the six most common departmental topics, with the nineteen others aggregated as a weighted average.  While tempting to replicate the historical data as accurately as possible, including all twenty-six options with their statistics would have created an unnecessarily complex section of the model, leading to imbalance.  This would have made verification of the corresponding modules nearly impossible.
+	
+	\par
+	
+	These two challenges were successfully overcome in the development of the model and its corresponding simulation.  While an imperfect representation of the actual call center, like any model, it accurately captures the most important aspects in order to develop worthwhile results.  With time, more challenges could be overcome and identified, but the current model functions well for the level of the desired analysis given the information and data available.
 
 	\subsection{Opportunities for Further Study}
 
-
-
+	This model lays a successful base for future analysis or study.  If more data, beyond the publicly available data, was to be acquired, the model and its parameters could be defined even more accurately.  Similarly, if further time was dedicated, the model could be designed to represent a complete year for the call center, including holidays, seasonal call and topic flucuations, and possibly fluctuating staffing levels.  However, the work to create such a specific model would require a goal that has not been defined.  The current model will be provided to the city of South Bend.  Since Arena is publicly available, the business analytics department could perhaps retain the model and build on it/use it as the need arises.
 
 
 
@@ -207,30 +257,28 @@ Two resources exist in this call center model:  call center liaisons (operators)
 \begin{thebibliography}{8}
 	
 	\bibitem{bapat}
-	Bapat, V. \& Pruitte, E.B. Jr.. (1998). Using simulation in call centers. \textit{In Proceedings of the 30th conference on Winter simulation (WSC '98)}, D. J. Medeiros, Edward F. Watson, John S. Carson, and Mani S. Manivannan (Eds.). IEEE Computer Society Press, Los Alamitos, CA, USA, 1395-1400.
-	
-	\bibitem{saltzman}
-	Saltzman, R.M. \& Mehrotra, V.. (2007). Managing trade-offs in call center agent scheduling: methodology and case study. \textit{In Proceedings of the 2007 Summer Computer Simulation Conference (SCSC '07)}. Society for Computer Simulation International, San Diego, CA, USA, 643-651.
-	
-	\bibitem{saltzmeh}
-	Saltzman, R.M. \& Mehrota, V. (2001). A call center uses simulation to drive strategic change. \textit{Interfaces 31}(3). https://doi.org/10.1287/inte.31.3.87.9632.
-	
-	
-	\bibitem{baraka}
-	Baraka, H., Baraka H. \& El-Gamily, I. (2013). Assessing call centers' success: A validation of the DeLone and Mclean model for information system. \textit{Egyptian Informatics Journal, 14}, 99-108.
+Vivek Bapat and Eddie B. Pruitte Jr. 1998. Using Simulation in Call Centers. In \textit{Proceedings of the 30th.  1998 Winter Simulation Conference (WSC ’98)}. IEEE Computer Society Press, Los Alamitos, CA, 1395-1400.
 
-	\bibitem{brown}
-	Brown, L., Gans, N., Mandelbaum, A., Sakov, A., Shen, H., Zeltyn, S., \& Zhao, L. (2005). Statistical analysis of a telephone call center: a queueing-science perspective. \textit{Journal of the American Statistical Association, 100}(469), 36-50.
+\bibitem{saltzman}
+Robert Saltzman and Vijay Mehrotra. 2007. Managing Trade-offs in Call Center Agent Scheduling: Methodology and Case Study. In \textit{Proceedings of the 2007 Summer Computer Simulation Conference (SCSC ’07)}. Society for Computer Simulation International, San Diego, CA, 643-651.
 
-	\bibitem{zhang}
-	Zhang X., Jeff Hong L., \& Zhang J.. (2014). Scaling and modeling of call center arrivals. \textit{In Proceedings of the 2014 Winter Simulation Conference (WSC '14)}. IEEE Press, Piscataway, NJ, USA, 476-485.
+\bibitem{saltzman2}
+Robert Saltzman and Vijay Mehrotra. 2001. A Call Center Uses Simulation to Drive Strategic Change. \textit{Interfaces} 31 (3). DOI: https://doi.org/10.1287/inte.31.3.87.9632
 
-	\bibitem{mandelbaun}
-	Mandelbaun A., Sakov A., \& Zeltyn S.. (2001). Empirical Analysis of a Call Center. Technion Israel Institute of Technology, Israel.
-	
-	\bibitem{webblog}
-	Finlay, A. (2018, August 10) \textit{It’s Not You, It’s Bots: Why Some Customers Prefer Self-Service Support Over Human Support Agents}. Retrieved from https://thinkrelay.com/blog/self-service-support/.
-	
+\bibitem{baraka}
+Hesham A. Baraka, Hoda Baraka, and Islam Hamdy EL-Gamily. 2013. Assessing call centers’ success: A validation of the DeLone and Mclean model for information system. \textit{Egyptian Informatics Journal} 14, 99-108.
+
+\bibitem{brown}
+Lawrence Brown, Noah Gans, Avishai Mandelbaum, Anat Sakov, Haipeng Shen, Sergey Zeltyn, and Linda Zhao. Statistical Analysis of a Telephone Call Center: A Queueing-Science Perspective. \textit{Journal of the American Statistical Association} 100 (469), 36-50.
+
+\bibitem{zhang}
+Xiaowei Zhang, L. Jeff Hong, and Jiheng Zhang. 2014. Scaling and Modeling of Call Center Arrivals. In \textit{Proceedings of the 2014 Winter Simulation Conference (WSC ’14)}. IEEE Press, Piscataway, NJ, 467-485. 
+
+\bibitem{mandelbaum}
+Avishai Mandelbaum, Anat Sakov, and Sergey Zeltyn. 2001. Empirical Analysis of a Call Center. Technion Israel Institute of Technology, Israel. 
+
+\bibitem{webblog}
+Alan Finlay. 2018. It’s Not You, It’s Bots: Why Some Customers Prefer Self-Service Support Over Human Support Agents. (August 2018). Retrieved from https://thinkrelay.com/blog/self-service-support/.
 
 \end{thebibliography}
 
