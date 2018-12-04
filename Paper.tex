@@ -193,6 +193,10 @@ Two resources exist in this call center model:  call center liaisons (operators)
 	\par
 	
 	Overall, this experimentation worked as expected.  As the number of callers who chose the self-service option increased, the wait time, queue length, and agent utilization all experienced linear decreases.  A visualization of the queue statistics can be seen in Figure 6.  Furthermore, the decrease in operator utilization can be seen in Figure 7.  It should be noted that in these trials, the graphs do show a definitive decrease in all metrics.
+	
+	\par
+	
+	The theorized 67\% utilization rate for the self-service option was then explored with an increase in mean call arrivals.  Through this analysis, it was observed that the self-service model with approximately a 20\% increase in total call arrivals exhibits agent utilization levels in range of the current state (base model) of the call center without the self-service option ($\approx$ 40\%).
 
 \begin{figure}[h]
 	\includegraphics[scale=.5]{self_serve_results.png}
@@ -213,11 +217,11 @@ The results of both experiments provided clear metrics on which to base a decisi
 
 \par
 
-Secondly, the self-serve simulation experiment shows that operator utilization decreases in a linear fashion depending on the number of callers who can and do choose the self-service option, all else held equal.  Similarly, wait time and queue length decrease as well.  As expected, a self-serve option that even a small percentage of customers use could clearly make the case for removing one operator (as supported above, even without a self-serve option).  However, the true effectiveness of adding such a system would take into other factors, such as start-up and maintenance costs and customer education and marketing.
+Secondly, the self-serve simulation experiment shows that operator utilization decreases in a linear fashion depending on the number of callers who can and do choose the self-service option, all else held equal.  Similarly, wait time and queue length decrease as well.  As expected, a self-serve option that even a small percentage of customers use could clearly make the case for removing one operator (as supported above, even without a self-serve option).  However, the true effectiveness of adding such a system would take into other factors, such as start-up and maintenance costs and customer education and marketing.  The extension of the self-service model analysis shows the increased amount of volume the call center can handle without necessitating hiring more staff.  Depending on the city's forecasts for the center, this may be a convincing argument to add this self-service system.
 
 \par
 
-Both of these experiments include estimated parameters, particularly the hypothetical self-service model.  As a result, neither of these experiments definitively answer/attempt to answer any of these question until they are compared to internal data for accuracy.  Such data would replace estimates with more accurate numbers and distributions; then, a simulation could be run for a definitive question.
+Both of these experiments include estimated parameters, particularly the hypothetical self-service model.  As a result, neither of these experiments definitively answer/attempt to answer any of these questions until they are compared to internal data for accuracy.  Such data would replace estimates with more accurate numbers and distributions; then, a simulation could be run for a definitive question.
 
 
 \section{Conclusion}
