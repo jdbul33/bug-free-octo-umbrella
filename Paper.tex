@@ -30,14 +30,14 @@ The city of South Bend, located in northern Indiana, established a citizen-acces
 	\end{figure}
 
 \par
-This paper explores operational efficiency with regard to operator staff.  As such, this model and simulation were be constructed with the primary purpose of discovering the optimal number of agents while maintaining adequate customer satisfaction (measured by waiting time and other metrics).  Additionally, the model was be modified to explore the addition of a self-service touch-tone option that would allow for callers to complete simple tasks, such as scheduling an extra trash pickup, without speaking to an agent.  Through simulation, these questions were be explored and potential solutions are be presented.  The open-source data was processed in Python in order to extract relevant distributions, and the call center was modeled in Arena as a discrete-event model.  
+This paper explores operational efficiency with regard to operator staff.  As such, this model and simulation were constructed with the primary purpose of discovering the optimal number of agents while maintaining adequate customer satisfaction (measured by waiting time and other metrics).  Additionally, the model was modified to explore the addition of a self-service touch-tone option that would allow for callers to complete simple tasks, such as scheduling an extra trash pickup, without speaking to an agent.  Through simulation, these questions were explored and potential solutions are presented.  The open-source data was processed in Python in order to extract relevant distributions, and the call center was modeled in Arena as a discrete-event model.  
 
 \section{Background}
-Call centers are a frequently studied topic within the simulation and modeling disciplines.  As such, some basic terminology shall be explained.  This model consists of two primary components:  calls and operators.  Calls will be represented as entities in Arena.  As entities, they can be created on distributions found from the data processing and then can properly flow through the simulation to a disposal point.  For this exploration, an ``arrival" is defined as a unique call first coming into the call process model.  The operators, also known as ``311 liasons," will be represented as resources in Arena.  As resources, the operators can be seized by the incoming call entities to properly simulate their time spent on each call.
+Call centers are a frequently studied topic within the simulation and modeling disciplines.  As such, some basic terminology shall be explained.  This model consists of two primary components:  calls and operators.  Calls will be represented as entities in Arena.  As entities, they can be created on distributions found from the data processing and then can properly flow through the simulation to a disposal point.  For this exploration, an ``arrival" is defined as a unique call first coming into the call process model.  The operators, also known as ``311 liasons" or ``agents," will be represented as resources in Arena.  As resources, the operators can be seized by the incoming call entities to properly simulate their time spent on each call.
 
 	\subsection{Prior Work}
 
-As stated previously, call centers are a frequently studied topic within simulation and modeling disciplines.  As such, call centers are a prime opportunity to utilize simulation techniques.  In fact, according to Bapat and Pruitte, simulation is the preferred method to analyze and determine the effectiveness of a call center.\cite{bapat}  It allows for evaluation of metrics beyond what a basic analysis encompasses.  For example, the scheduling of call agents should be optimized against call duration and abandonment, as documented by Saltzman and Mehrota\cite{saltzman}.  Such simulations can easily be created to illustrate feasibility of goal accomplishment for corporations while enabling efficient and accurate decision-making\cite{saltzman}.
+Call centers are a prime opportunity to utilize simulation techniques.  In fact, according to Bapat and Pruitte, simulation is the preferred method to analyze and determine the effectiveness of a call center.\cite{bapat}  It allows for evaluation of metrics beyond what a basic analysis encompasses.  For example, the scheduling of call agents should be optimized against call duration and abandonment, as documented by Saltzman and Mehrota\cite{saltzman}\cite{baraka}.  Such simulations can easily be created to illustrate feasibility of goal accomplishment for corporations while enabling efficient and accurate decision-making\cite{saltzman2}.
 
 \par
 
@@ -48,17 +48,17 @@ Call center and queuing analysis has been the focus of academic research for yea
 \section{Mathematical Model}
 
 	\subsection{Base Model}
-Our core model structure is based off the work of Mandelbaum in 2001\cite{mandelbaum}.  In his highly esteemed text, Mandelbaum lays out the basic schematic of a call center model.  His model illustrates the possible flow of a call, starting with its arrival until disposal, be that as a lost call or having completed successfully.  While simplistic by nature, the model covers all of the basic aspects of a call center in a sensible format that can easily by applied in Arena.  This model can be seen in Figure 2.  
+The core model structure is based off the work of Mandelbaum in 2001\cite{mandelbaum}.  In his highly esteemed text, Mandelbaum lays out the basic schematic of a call center model.  His model illustrates the possible flow of a call, starting with its arrival until disposal, be that as a lost call or having completed successfully.  While simplistic by nature, the model covers all of the basic aspects of a call center in a sensible format that can easily by applied in Arena.  This model can be seen in Figure 2.  
 
 	\begin{figure}[h]
 	\includegraphics[scale=.45]{call_center_layout.png}
 	\caption{Basic Operational Schematic of Call Center (Mandelbaum 2001)}
 	\end{figure}
 
-Mandelbaum's model identifies one avenue for arrivals (incoming calls) and three methods of disposal(lost calls due to busy signal, lost calls due to wait time, and completed calls).  It can be seen that the lost calls due to busy signals and the lost calls due to wait time both have retrial loops built in where some customers may immediately try to call into the system again and are treated as new arrivals for the sake of the simulation.  Additionally, completed calls have the option to ``return", where they would immediately re-enter the system for whatever reason (perhaps an unresolved issue).  There is a single centralized queue before the calls are distributed among resources (operators).  At its core, this is a condensed high-level view of a call center model, specifically designed so that it could easily be expanded as needed for specific analysis.
+Mandelbaum's model identifies one avenue for arrivals (incoming calls) and three methods of disposal(lost calls due to busy signal, lost calls due to wait time, and completed calls).  It can be seen that the lost calls due to busy signals and the lost calls due to wait time both have retrial loops built in where some customers may immediately try to call into the system again and are treated as new arrivals for the sake of the simulation.  Completed calls also have the option to ``return", where they would immediately re-enter the system for whatever reason (perhaps an unresolved issue).  There is a single centralized queue before the calls are distributed among resources (operators).  At its core, this is a condensed high-level view of a call center model, specifically designed so that it could easily be expanded as needed for specific analyses.
 
 \subsection{Analysis-Specific Model}
-The model used for this analysis expands a great deal on the core model identified by Mandelbaum.  It adds three key features that the original model omits: voicemails, operator breaks, and alternate call flow for supervisor assistance.  Additionally, calls are assigned key attributes that determine their specific flow and timing throughout the simulation.  These key attributes include topic, language, and priority.  The hypothetical self-service option was added on to this expanded model for the relevant analysis.
+The model used for this analysis expands a great deal on the core model identified by Mandelbaum.  It adds three key features that the original model omits: voicemails, operator breaks, and an alternate call flow for supervisor assistance.  Additionally, calls are assigned key attributes that determine their specific flow and timing throughout the simulation.  These key attributes include topic, language, and priority.  The hypothetical self-service option was added on to this expanded model for the relevant analysis.
 
 	\paragraph{Voicemails}
 	
@@ -78,7 +78,7 @@ Calls are assigned a topic based on the distribution of topics in historical cal
 
 	\paragraph{Self-Service}
 	
-One of the purposes of this project is to evaluate the impact of adding a self-service option that would eliminate the need to speak to an agent for certain call topics.  This was added as an extension of the base model, but was run separately from the base model for the use of direct comparison of the results.  Depending on the assigned call topic, callers have the option to self-service, with multiple routes leading to the agent queue in the event the caller has trouble with self-service and needs an operator.
+One of the purposes of this project was to evaluate the impact of adding a self-service option that would eliminate the need to speak to an agent for certain call topics.  This was added as an extension of the base model, but was run separately from the base model for the use of direct comparison of the results.  Depending on the assigned call topic, callers have the option to self-service, with multiple routes leading to the agent queue in the event the caller has trouble with self-service and needs an operator.
 
 
 \begin{figure}[h]
@@ -108,17 +108,17 @@ The model was also verified by ensuring the output matched the estimated results
 	
 	\subsection{Validation Plan}
 	
-The model and simulation's results can ultimately be validated using historical data.  Since we possess several years' worth of call center data, the results of the base simulation can be compared to this .  The number of call arrivals was created from the historical data, so this can be compared.  The operator schedule was provided by call center management, allowing for actual validation for these values.  Historical data also exists for percent of calls abandoned, which can also be directly compared.
+The model and simulation's results were ultimately validated using historical data.  Since several years' worth of call center data was available, the results of the base simulation were compared to this.  The number of call arrivals was created from the historical data, so this can be compared as well.  The operator schedule was provided by call center management, allowing for actual validation for these values.  Historical data also exists for percent of calls abandoned, which was also be directly compared.
 	
 \section{Simulation}
 
 	\subsection{Method}
 	
-A call center is modeled as a discrete event model, leading to the logical choice of Arena for this simulation.  Arena excels in creating and monitoring entities, while providing a visual representation of their flow through a system (calls through a call center in this case).  Arena allows for efficient statistic and metric collection, which can be organized and analyzed to answer any questions initially posed for the simulation.
+A call center is modeled as a discrete event model, leading to the logical choice of Arena for this simulation.  Arena excels in creating and monitoring entities, while providing a visual representation of their flow through a system.  Arena allows for efficient statistic and metric collection, which can be organized and analyzed to answer any questions initially posed for the simulation.
 
 \par
 
-Arena also features built-in modules that vastly simplify actions that would need to intricately programmed in a high-level language.  A prime example of this could be Arena's schedule option, which is a built-in option that was leveraged for two aspects of this project:  the call arrival schedule and call center operator schedule.  By using this included module, the simulation was able to be developed as close to ``real-life" as possible in these areas.
+Arena also features built-in modules that vastly simplify actions that would need to intricately programmed in a high-level language.  A prime example of this is Arena's schedule option, which is a built-in option that was leveraged for two aspects of this project:  the call arrival schedule and operator schedule.  By using this included module, the simulation was able to be developed as close to ``real-life" as possible in these areas.
 	
 	\subsection{Attributes \& Resources}
 
@@ -140,7 +140,7 @@ Two resources exist in this call center model:  call center liaisons (operators)
 	
 	\par
 	
-	Several other estimated parameters exist in this model and simulation.  These included callers getting a busy signal (and the corresponding retry rate), callers who experience a problem and need to speak with a supervisor, and whether calls who spoke to a supervisor need to be transferred back to an agent to complete a task.  These parameters were estimated through the use of research and experimentation in an effort to represent the center as closely as possible, since no data existed for these.
+	Several other estimated parameters exist in this model and simulation.  These included callers getting a busy signal (and the corresponding retry rate), callers who experience a problem and need to speak with a supervisor, and whether calls who spoke to a supervisor need to be transferred back to an agent to complete a task.  These parameters were estimated through the use of research and experimentation in an effort to represent the center as closely as possible, since no data existed for these.  However, they were set at levels where total calls abandoned and handled were similar to the historical data.
 	
 	\subsection{Run Settings \& Replications}
 	
@@ -149,7 +149,7 @@ Two resources exist in this call center model:  call center liaisons (operators)
 	 
 	\subsection{Adjustments for Self-Serve Option Model}
 	
-	The base model was expanded upon into a second model in order to evaluate the effectiveness of adding a self-service alternative before speaking to an agent.  The ``route" for calls to self-service utilized empirical research regarding consumer attitudes for automated systems.  A survey by Nuance Enterprise suggests that up to 75\% of consumers see self-service as a convenient option when available while 67\% said they preferred self-service over dealing with a company representative \cite{webblog}.  The simulation utilizes the 67\% preference to determine the number of call arrivals that will be routed into self-service options, given the customer has been assigned a topic that is self-serviceable.  All remaining calls were routed to the operator queue discussed in the original model.
+	The base model was expanded upon into a second model in order to evaluate the effectiveness of adding a self-service alternative before speaking to an agent.  The ``route" for calls to self-service utilized empirical research regarding consumer attitudes for automated systems.  A survey by Nuance Enterprise suggests that up to 75\% of consumers see self-service as a convenient option when available while 67\% said they preferred self-service over dealing with a company representative \cite{webblog}.  The simulation utilizes the 67\% preference to determine the number of call arrivals that will be routed into self-service options, given the customer has been assigned a topic that is self-serviceable.  A self-serviceable topic is defined as a percentage of callers with a ``Water Works" and ``Solid Waste" topic, since many of these calls can be handled via a touch-tone or voice system.  All remaining calls were routed to the operator queue discussed in the original model.
 
 \section{Experimentation \& Results}
 
@@ -233,7 +233,7 @@ Overall, this analysis resulted in the building of an accurate, historically val
 	
 	\par
 	
-	A second main challenge was determining when the model's complexity was sufficient in order to explore the posed questions and avoiding an overly-complicated or unbalanced model.  With an actual call center as the subject, this model could have easily become so complicated as to be inefficient and more error-prone (harder to test and debug).  A prime example of this is the assignment of call topics to determine the call duration distribution.  Twenty-six departments, each with their own duration statistics, exist in the historical data.  However, the final model incorporates only the six most common departmental topics, with the nineteen others aggregated as a weighted average.  While tempting to replicate the historical data as accurately as possible, including all twenty-six options with their statistics would have created an unnecessarily complex section of the model, leading to imbalance.  This would have made verification of the corresponding modules nearly impossible.
+	A second main challenge was determining when the model's complexity was sufficient in order to explore the posed questions and avoiding an overly-complicated or unbalanced model.  With an actual call center as the subject, this model could have easily become so complicated as to be inefficient and more error-prone (harder to test and debug).  A prime example of this is the assignment of call topics to determine the call duration distribution.  Twenty-six departments, each with their own duration statistics, exist in the historical data.  However, the final model incorporates only the six most common departmental topics, with the nineteen others aggregated as a weighted average.  While it is tempting to replicate the historical data as accurately as possible, including all twenty-six options with their statistics would have created an unnecessarily complex section of the model, leading to imbalance.  This would have made verification of the corresponding modules nearly impossible.
 	
 	\par
 	
@@ -264,11 +264,12 @@ Vivek Bapat and Eddie B. Pruitte Jr. 1998. Using Simulation in Call Centers. In 
 \bibitem{saltzman}
 Robert Saltzman and Vijay Mehrotra. 2007. Managing Trade-offs in Call Center Agent Scheduling: Methodology and Case Study. In \textit{Proceedings of the 2007 Summer Computer Simulation Conference (SCSC ’07)}. Society for Computer Simulation International, San Diego, CA, 643-651.
 
+\bibitem{baraka}
+Hesham A. Baraka, Hoda Baraka, and Islam Hamdy EL-Gamily. 2013. Assessing call centers’ success: A validation of the DeLone and Mclean model for information system. \textit{Egyptian Informatics Journal} 14, 99-108.
+
 \bibitem{saltzman2}
 Robert Saltzman and Vijay Mehrotra. 2001. A Call Center Uses Simulation to Drive Strategic Change. \textit{Interfaces} 31 (3). DOI: https://doi.org/10.1287/inte.31.3.87.9632
 
-\bibitem{baraka}
-Hesham A. Baraka, Hoda Baraka, and Islam Hamdy EL-Gamily. 2013. Assessing call centers’ success: A validation of the DeLone and Mclean model for information system. \textit{Egyptian Informatics Journal} 14, 99-108.
 
 \bibitem{brown}
 Lawrence Brown, Noah Gans, Avishai Mandelbaum, Anat Sakov, Haipeng Shen, Sergey Zeltyn, and Linda Zhao. Statistical Analysis of a Telephone Call Center: A Queueing-Science Perspective. \textit{Journal of the American Statistical Association} 100 (469), 36-50.
